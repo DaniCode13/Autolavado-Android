@@ -6,12 +6,14 @@ public class Utilities {
     public static String TABLE_ENTRIES = "entries";
     public static String ID = "id";
     public static String PRICE = "price";
-    public static String DESCRIPTION = "description";
+    public static String TYPE_ENTRY = "type_entry";
 
 
     public static final String CREATE_TABLE_ENTRY = "CREATE TABLE " + TABLE_ENTRIES + "(" +
             PRICE + " TEXT, " +
-            DESCRIPTION + " TEXT)";
+            TYPE_ENTRY + " TEXT)";
 
+
+    public static String []OPTIONS_TYPE_ENTRIES = {"Carro", "Camioneta","Moto"};
 
 }

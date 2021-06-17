@@ -6,10 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -34,7 +38,8 @@ public class NewCarFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private View view;
-    private TextInputLayout editTextPrice, editTextDescription;
+    private TextInputLayout editTextPrice, editTypeEntry;
+    private AutoCompleteTextView autoCompleteTextView;
     private Button btn_save_entry;
     ConnectionSQLite connection;
 
@@ -80,7 +85,7 @@ public class NewCarFragment extends Fragment {
 
     private void init() {
         editTextPrice = view.findViewById(R.id.input_layout_price);
-        editTextDescription = view.findViewById(R.id.input_layout_description);
+        editTypeEntry = view.findViewById(R.id.input_layout_type_entry);
         btn_save_entry = view.findViewById(R.id.btn_save_entry);
         btn_save_entry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +94,17 @@ public class NewCarFragment extends Fragment {
 //                register_entries_sql();
             }
         });
+        init_dropdown_options();
+    }
+
+    private void init_dropdown_options() {
+        autoCompleteTextView = view.findViewById(R.id.autoCompleteTypeEntry);
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(),R.layout.type_entries_list_item,Utilities.OPTIONS_TYPE_ENTRIES);
+
+
+        autoCompleteTextView.setText(arrayAdapter.getItem(0).toString(),false);
+        autoCompleteTextView.setAdapter(arrayAdapter);
     }
 
     private void register_entries_sql() {
@@ -97,9 +113,9 @@ public class NewCarFragment extends Fragment {
 
         String insert = "INSERT INTO " + Utilities.TABLE_ENTRIES + " (" +
                 Utilities.PRICE + "," +
-                Utilities.DESCRIPTION + ") values (" +
+                Utilities.TYPE_ENTRY + ") values (" +
                 editTextPrice.getEditText().getText().toString() + "," +
-                editTextDescription.getEditText().getText().toString() + ")";
+                editTypeEntry.getEditText().getText().toString() + ")";
         db.execSQL(insert);
         db.close();
     }
@@ -109,10 +125,13 @@ public class NewCarFragment extends Fragment {
         SQLiteDatabase db = connection.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Utilities.PRICE, editTextPrice.getEditText().getText().toString());
-        values.put(Utilities.DESCRIPTION, editTextDescription.getEditText().getText().toString());
+        values.put(Utilities.TYPE_ENTRY,editTypeEntry.getEditText().getText().toString());
         Long result = db.insert(Utilities.TABLE_ENTRIES, Utilities.PRICE, values);
         Toast.makeText(getContext(), "resultante " + result, Toast.LENGTH_LONG).show();
         db.close();
 
+        getFragmentManager().beginTransaction().remove(NewCarFragment.this).commit();
+
     }
+
 }
